@@ -60,15 +60,15 @@ Parameters:
  */
 
 function getWinnersByYear(cbgetWinners,cbgetYears) {
-    const year = cbgetYears.map(function(date){
-        return date.Year;
+    const year = cbgetYears.filter(function(date){
+        return `${date.Year}`;
     });
-    const country = cbgetWinners.map(function(name){
+    const country = cbgetWinners.filter(function(name){
         return `${name['Winning condition']}`;
     });
-    return `In ${year} 
+    return `In ${year}, ${country} won the world cup!`;
 };
-
+console.log(getWinnersByYear(getWinners(getFinals()),getYears(getFinals())))
 
 
 
