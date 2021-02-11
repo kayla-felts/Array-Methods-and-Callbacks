@@ -11,36 +11,51 @@ console.log('its working');
 (c) Home Team goals for 2014 world cup final
 (d) Away Team goals for 2014 world cup final
 (e) Winner of 2014 world cup final */
-
-
+const final14 = fifaData.filter(function(game){
+    return game.Year === 2014 && game.Stage === 'Final';
+});
+console.log(final14);
+console.log(final14[0]['Home Team Name']);
+console.log(final14[0]['Away Team Name']);
+console.log(final14[0]['Home Team Goals']);
+console.log(final14[0]['Away Team Goals']);
+console.log(final14[0]['Win conditions']);
 /* Task 2: Create a function called  getFinals that takes `data` as an argument and returns an array of objects with only finals data */
 
-function getFinals(/* code here */) {
-
-    /* code here */
-
-};
+function getFinals(data){
+    const fin = data.filter(function(finals){
+    return finals.Stage === 'Final';
+});
+return fin
+}
+console.log(getFinals(fifaData));
 
 /* Task 3: Implement a higher-order function called `getYears` that accepts the callback function `getFinals`, and returns an array called `years` containing all of the years in the dataset */
+    
+function getYears(data, callback) {
+   return callback(data).map(function(game){
+       return game.Year
+   })
+}
+console.log(getYears(fifaData,getFinals))
 
-function getYears(/* code here */) {
-
-    /* code here */
-
-};
-
-getYears();
 
 /* Task 4: Implement a higher-order function called `getWinners`, that accepts the callback function `getFinals()` and determine the winner (home or away) of each `finals` game. Return the name of all winning countries in an array called `winners` */ 
 
-function getWinners(/* code here */) {
-
-    /* code here */
-
-};
-
-getWinners();
-
+function getWinners(data, callback) {
+    let winners = [];
+    callback(data).forEach(function(wins){
+        if(wins['Home Team Goals'] > wins['Away Team Goals']){
+             winners.push(wins['Home Team Name']);
+        }else if(wins['Away Team Goals'] > wins['Home Team Goals']){
+            winners.push(wins['Away Team Name'])
+        }else{
+            winners.push(wins['Win conditions']);
+        }
+    });
+    return winners;
+}
+console.log(getWinners(fifaData, getFinals))
 /* Task 5: Implement a higher-order function called `getWinnersByYear` that accepts the following parameters and returns a set of strings "In {year}, {country} won the world cup!" 
 
 Parameters: 
@@ -48,21 +63,36 @@ Parameters:
  * callback function getYears
  */
 
-function getWinnersByYear(/* code here */) {
+function getWinnersByYear(cbgetWinners,cbgetYears) {
+   let winners = cbgetWinners(fifaData, getFinals);
+  // console.log(winners);
+   let years = cbgetYears(fifaData, getFinals);
+  // console.log(years);
+   let finalists = [];
 
-};
+   winners.forEach(function(item,index){
+       finalists.push(`In ${years[index]}, ${item} won the world cup!`)
+   })
+   //console.log(winners)
+   return finalists
+}
 
-getWinnersByYear();
+console.log(getWinnersByYear(getWinners, getYears))
 
 /* Task 6: Write a function called `getAverageGoals` that accepts a parameter `data` and returns the the average number of home team goals and away team goals scored per match (Hint: use .reduce and do this in 2 steps) */
 
-function getAverageGoals(/* code here */) {
-
-    /* code here */
-
+function getAverageGoals(data) {
+    const homeGoal = data.reduce(function(accumulator, score){
+        return (accumulator + score['Home Team Goals']) / data.length;
+    },0);
+    const awayGoal = data.reduce(function(accumulator, score){
+        return (accumulator + score['Away Team Goals']) / data.length;
+    },0);
+    return `Home Goals ${homeGoal}. Away Goals ${awayGoal}.`;
 };
 
-getAverageGoals();
+console.log(getAverageGoals(fifaData))
+
 
 /// STRETCH 🥅 //
 
@@ -101,4 +131,5 @@ function badDefense(/* code here */) {
 
 badDefense();
 
-/* If you still have time, use the space below to work on any stretch goals of your chosing as listed in the README file. */
+
+/* If you still have time, use the space below to work on any stretch goals of your chosing as listed in the README file.*/
